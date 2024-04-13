@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Words Management</title>
+</head>
+<body>
+<h1>Words Management</h1>
+
+<div>
+    <input type="text" id="wordsInput" placeholder="Enter words separated by commas">
+    <button onclick="addWords()">Add Words</button>
+    <button onclick="checkWords()">Check Words</button>
+    <button onClick="window.location.href = 'display_words.html';">Display All Words</button>
+</div>
+
+<script>
+    const jwtToken = localStorage.getItem('jwtToken');
+
+
+
+
+    function addWords() {
+        const words = document.getElementById('wordsInput').value;
+        fetch('/add_bulk_words', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            body: JSON.stringify({ words: words })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                alert('Add Words Result: ' + JSON.stringify(data, null, 2));
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function checkWords() {
+        const words = document.getElementById('wordsInput').value;
+        fetch('/check_words', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            body: JSON.stringify({ words: words })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                alert('Check Words Result: ' + JSON.stringify(data, null, 2));
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+</body>
+</html>

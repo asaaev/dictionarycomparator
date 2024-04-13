@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Words</title>
+</head>
+<body>
+<h1>All Words</h1>
+<ul id="wordsList"></ul>
+
+<script>
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    function loadWords() {
+        fetch('/get_all_words', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const wordsList = document.getElementById('wordsList');
+                wordsList.innerHTML = '';
+                data.forEach(word => {
+                    const li = document.createElement('li');
+                    li.textContent = word.WordBody;
+                    wordsList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load words');
+            });
+    }
+
+    loadWords();
+</script>
+</body>
+</html>

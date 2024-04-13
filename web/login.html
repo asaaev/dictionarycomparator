@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dictionary App</title>
+</head>
+<body>
+<h1>Login to Dictionary Management</h1>
+
+<div id="loginForm">
+    <input type="text" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<script>
+    function login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email, password: password })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Login failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                localStorage.setItem('jwtToken', data.token);
+
+                window.location.href = '/words.html';
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+    }
+</script>
+</body>
+</html>

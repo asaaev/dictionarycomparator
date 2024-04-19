@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"DictionaryComparator/internal/local"
 	"DictionaryComparator/internal/model"
 	"DictionaryComparator/internal/repository"
 	"encoding/json"
@@ -8,7 +9,7 @@ import (
 	"net/http"
 )
 
-func CreateUserHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+func CreateUserHandler(db local.GormDBInterface, w http.ResponseWriter, r *http.Request) {
 	var newUser model.User
 	if err := json.NewDecoder(r.Body).Decode(&newUser); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

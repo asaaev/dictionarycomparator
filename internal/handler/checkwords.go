@@ -1,14 +1,14 @@
 package handler
 
 import (
+	"DictionaryComparator/internal/local"
 	"DictionaryComparator/internal/model"
 	"encoding/json"
-	"gorm.io/gorm"
 	"net/http"
 	"strings"
 )
 
-func CheckWordsHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+func CheckWordsHandler(db local.GormDBInterface, w http.ResponseWriter, r *http.Request) {
 	var request struct {
 		Words string `json:"words"`
 	}
@@ -20,7 +20,7 @@ func CheckWordsHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	existingWords := make(map[string]bool)
 	for _, word := range wordsToCheck {
 		var wordModel model.Word
-		if err := db.Where("word_body = ?", strings.TrimSpace(word)).First(&wordModel).Error; err == nil {
+		if err := db.Where("word_body = ?", strings.ToLower(strings.TrimSpace(word))).First(&wordModel).Error; err == nil {
 			existingWords[word] = true
 		} else {
 			existingWords[word] = false

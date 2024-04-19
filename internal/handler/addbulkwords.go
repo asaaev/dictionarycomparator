@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"DictionaryComparator/internal/local"
 	"DictionaryComparator/internal/model"
 	"encoding/json"
 	"gorm.io/gorm"
@@ -8,7 +9,7 @@ import (
 	"strings"
 )
 
-func AddBulkWordsHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+func AddBulkWordsHandler(db local.GormDBInterface, w http.ResponseWriter, r *http.Request) {
 	var request struct {
 		Words string `json:"words"`
 	}
@@ -21,28 +22,28 @@ func AddBulkWordsHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	//status tracing map
 	addStatus := make(map[string]string)
 	for _, word := range wordsToAdd {
-		trimmerWord := strings.TrimSpace(word)
+		normalizedWord := strings.ToLower(strings.TrimSpace(word))
 		//empty word check
-		if trimmerWord == "" {
+		if normalizedWord == "" {
 			addStatus[word] = "ignored - empty word"
 		}
 		var wordModel model.Word
-		if err := db.Where("word_body = ?", trimmerWord).First(&wordModel).Error; gorm.ErrRecordNotFound == nil {
+		if err := db.Where("word_body = ?", normalizedWord).First(&wordModel).Error; gorm.ErrRecordNotFound == nil {
 			//if word already exists
-			addStatus[trimmerWord] = "ignored - already exists"
+			addStatus[normalizedWord] = "ignored - already exists"
 			continue
 		} else if err != nil && err != gorm.ErrRecordNotFound {
-			addStatus[trimmerWord] = "error - during lookup"
+			addStatus[normalizedWord] = "error - during lookup"
 			continue
 		}
 		//if word not present
-		newWord := model.Word{WordBody: trimmerWord}
+		newWord := model.Word{WordBody: normalizedWord}
 		if err := db.Create(&newWord).Error; err != nil {
 			//error during injection
-			addStatus[trimmerWord] = "error - during add"
+			addStatus[normalizedWord] = "error - during add"
 			continue
 		}
-		addStatus[trimmerWord] = "added"
+		addStatus[normalizedWord] = "added"
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(addStatus)

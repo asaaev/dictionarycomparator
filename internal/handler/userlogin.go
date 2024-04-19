@@ -1,10 +1,10 @@
 package handler
 
 import (
+	"DictionaryComparator/internal/local"
 	"DictionaryComparator/internal/model"
 	"DictionaryComparator/internal/security"
 	"encoding/json"
-	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -14,7 +14,7 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
-func LoginHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+func LoginHandler(db local.GormDBInterface, w http.ResponseWriter, r *http.Request) {
 	//initialize structure
 	var req LoginRequest
 	err := json.NewDecoder(r.Body).Decode(&req)

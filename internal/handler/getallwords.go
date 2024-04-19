@@ -1,13 +1,13 @@
 package handler
 
 import (
+	"DictionaryComparator/internal/local"
 	"DictionaryComparator/internal/model"
 	"encoding/json"
-	"gorm.io/gorm"
 	"net/http"
 )
 
-func GetAllWordsHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+func GetAllWordsHandler(db local.GormDBInterface, w http.ResponseWriter, r *http.Request) {
 	var words []model.Word
 	if err := db.Order("word_body asc").Find(&words).Error; err != nil {
 		http.Error(w, "Error retrieving words", http.StatusInternalServerError)

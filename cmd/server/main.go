@@ -2,7 +2,7 @@ package main
 
 import (
 	"DictionaryComparator/internal/handler"
-	"DictionaryComparator/internal/lockal"
+	"DictionaryComparator/internal/local"
 	"DictionaryComparator/internal/model"
 	"DictionaryComparator/internal/security"
 	"log"
@@ -11,7 +11,8 @@ import (
 
 func main() {
 	//DB starter
-	db, err := lockal.NewDatabase()
+	var db local.GormDBInterface
+	db, err := local.NewDatabase()
 	if err != nil {
 		log.Fatal("Could not connect to the database: %v", err)
 	}

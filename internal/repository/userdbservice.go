@@ -1,11 +1,12 @@
 package repository
 
 import (
+	"DictionaryComparator/internal/local"
 	"DictionaryComparator/internal/model"
 	"gorm.io/gorm"
 )
 
-func CreateUser(db *gorm.DB, user *model.User) error {
+func CreateUser(db local.GormDBInterface, user *model.User) error {
 	return db.Create(user).Error
 }
 func GetUserByEmail(db *gorm.DB, email string) (model.User, error) {
